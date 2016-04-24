@@ -1,7 +1,3 @@
-(equal "0e45f3bb-0768-4f3d-8149-4b9d1ad50068"
- "0e45f3bb-0768-4f3d-8149-4b9d1ad50068"
-)
-
 (defvar org-depend-db (make-hash-table :test 'equal))
 
 (defun org-depend-db-init () (setq org-depend-db (make-hash-table :test 'equal)))
