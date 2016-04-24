@@ -44,10 +44,10 @@
 
 (defun org-depend-graph (id db)
   (-if-let (deps (cdr (org-depend-get id db)))
-      (let ((new-edges (-map (-partial #'cons id) deps))
+      (let ((edges (-map (-partial #'cons id) deps))
             (results (org-depend--merge-graphs
                       (-map (-rpartial #'org-depend-graph db) deps))))
-        (cons (cons id (car results)) (append new-edges)))
+        (cons (cons id (car results)) (append edges (cdr results))))
     (cons (list id) '())))
 
 (defun org-depend-graphs (ids db)
