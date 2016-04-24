@@ -36,7 +36,6 @@
      (h1<h2 'greater))))
 
 (defun org-depend--merge-graphs (graphs)
-  (message "Merging:\n  %S" graphs)
   (-reduce-from
    (-lambda ((vs1 . es1) (vs2 . es2))
              (cons (-union vs1 vs2) (-union es1 es2)))
@@ -45,13 +44,10 @@
 
 (defun org-depend-graph (id db)
   (-if-let (deps (cdr (org-depend-get id db)))
-      (progn
-        (message "Looking at %S with deps: %S" id deps)
-        (let ((new-edges (-map (-partial #'cons id) deps))
-              (results (org-depend--merge-graphs
-                        (-map (-rpartial #'org-depend-graph db) deps))))
-          (cons (cons id (car results)) (append new-edges))))
-    (message "Looking at %S with no deps." id)
+      (let ((new-edges (-map (-partial #'cons id) deps))
+            (results (org-depend--merge-graphs
+                      (-map (-rpartial #'org-depend-graph db) deps))))
+        (cons (cons id (car results)) (append new-edges)))
     (cons (list id) '())))
 
 (defun org-depend-graphs (ids db)
