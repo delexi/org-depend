@@ -70,3 +70,9 @@
             (append '("digraph org_dependencies {")
                     (-map (-partial #'s-prepend "  ") edges-dot)
                     '("}")))))
+
+(defun org-depend-add-dependency ()
+  (interactive)
+  (let ((from (point))
+        (to-id (org-id-get-with-outline-path-completion)))
+    (org-entry-put from "DEPEND" to-id)))
