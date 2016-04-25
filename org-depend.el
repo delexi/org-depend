@@ -17,14 +17,15 @@
             (-partial #'-partition 2))
            plist))
 
-(defun org-depend-update-from-file (file db)
-  (with-current-buffer (find-file-noselect file)
+(defun org-depend-update-from-file (buffer db)
+  (with-current-buffer buffer
     (org-element-map (org-element-parse-buffer 'headline) 'headline
       (lambda (h)
         (let* ((props (cadr h))
                (id (org-id-get (plist-get props :begin) 'create))
                (depends (org-depend-plist-get-all :DEPEND props)))
-          (org-depend-put (cons id depends) db))))))
+          (org-depend-put (cons id depends) db)))))
+  db)
 
 (defun org-depend-find (f h db)
   (let ((res (funcall f h)))
