@@ -75,6 +75,7 @@
                           edges)))
     (s-join "\n"
             (append '("digraph org_dependencies {")
+                    '("  size=\"8,8!\";")
                     (-map (-partial #'s-prepend "  ") edges-dot)
                     '("}")))))
 
