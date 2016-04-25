@@ -1,3 +1,9 @@
+(require 'org)
+(require 'org-id)
+(require 'dash)
+(require 'dash-functional)
+
+
 (defvar org-depend-db (make-hash-table :test 'equal))
 
 (defun org-depend-db-init () (setq org-depend-db (make-hash-table :test 'equal)))
