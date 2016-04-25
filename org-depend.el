@@ -79,6 +79,27 @@
                     (-map (-partial #'s-prepend "  ") edges-dot)
                     '("}")))))
 
+(defun org-depend-show-dependency-graph (&optional buffer)
+  (interactive)
+  (unless buffer (setq buffer (current-buffer)))
+  (let* ((ids (with-current-buffer buffer
+                (org-map-entries (lambda () (org-entry-get (point) "ID")))))
+         (db (org-depend-update-from-file buffer org-depend-db))
+         (graph (org-depend-graphs ids db))
+         (dot (org-depend-graph-to-dot graph))
+         (dot-file (with-temp-buffer
+                     (insert dot)
+                     (write-file (concat (make-temp-name "/tmp/org-depend-dot-") ".dot"))
+                     (buffer-file-name)))
+         (out-file (make-temp-file "/tmp/org-depend-dot-" nil ".png"))
+         (ret-value (start-process
+                     "dot" "*dot*" "/usr/bin/dot"
+                     "-Tpng" (format "-o%s" out-file) dot-file)))
+    (sit-for 5)
+    (pop-to-buffer (find-file-noselect out-file))
+    (image-transform-fit-to-height)
+    (image-transform-fit-to-width)))
+
 (defun org-depend-add-dependency ()
   (interactive)
   (let ((from (point))
