@@ -71,7 +71,7 @@
                         (cons (org-depend-get-headline-from-id from)
                               (org-depend-get-headline-from-id to))) (cdr graph)))
          (edges-dot (-map (-lambda ((from . to))
-                            (concat from " -> " to ";"))
+                            (format "\"%s\" -> \"%s\";" from to))
                           edges)))
     (s-join "\n"
             (append '("digraph org_dependencies {")
