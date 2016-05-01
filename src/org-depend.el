@@ -247,6 +247,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
                     '("}")))))
 
 ;;; Commands
+;;;###autoload
 (defun org-depend-agenda-dependencies (&optional transitive id-or-pom)
   (interactive "P")
   (setq id-or-pom (org-depend--pomoi-to-id id-or-pom 'create))
@@ -271,6 +272,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
                          (outline-next-heading)))))
       (org-tags-view nil "{.*}"))))
 
+;;;###autoload
 (defun org-depend-capture-dependency (&optional pomoi capture-keys)
   (interactive)
   (let* ((from (org-depend--pomoi-to-id-check "pomoi" pomoi 'create))
@@ -284,6 +286,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
     (org-depend--capture-add-oneshot-hook add-dependency-at-point)
     (org-capture nil capture-keys)))
 
+;;;###autoload
 (defun org-depend-add-dependency (&optional from to)
   (interactive "P")
   (setq to (if (called-interactively-p 'any)
@@ -298,6 +301,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
 
 (declare-function image-transform-fit-to-height 'image-mode)
 (declare-function image-transform-fit-to-width 'image-mode)
+;;;###autoload
 (defun org-depend-show-dependency-graph (&optional buffer)
   (interactive "bBuffer: ")
   (org-depend-update-db-from-files (org-depend--get-depend-files) org-depend-db)
