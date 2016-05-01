@@ -3,7 +3,7 @@
 ;; Copyright (C) 2016 Alexander Baier
 
 ;; Author: Alexander Baier <alexander.baier@mailbox.org>
-;; Homepage: http://example.com/foo
+;; Homepage: https://github.com/delexi/org-depend
 
 ;; Version: 0.0.1
 
