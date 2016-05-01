@@ -63,7 +63,8 @@ values are the timestamps denoting when those filenames where
 last scanned for dependency information.")
 
 (defvar org-depend-files org-refile-targets
-  "Files scanned for dependant headlines in the format of `org-refile-targets'.")
+  "Files scanned for dependant headlines in the format of
+  `org-refile-targets'.")
 
 ;;; inner helper functions
 (defun org-depend--db-put (id deps db)
