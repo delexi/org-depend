@@ -297,10 +297,12 @@ then removes itself from `org-depend--oneshot-hook-variable'"
 (defun org-depend-add-dependency (&optional from to)
   (interactive "P")
   (setq to (if (called-interactively-p 'any)
-               (org-depend--get-id-with-outline-path-completion nil)
+               (org-depend--get-id-with-outline-path-completion
+                org-depend-files)
              (org-depend--pomoi-to-id-check "to" to 'create)))
   (setq from (if (eq from '(4))
-                 (org-depend--get-id-with-outline-path-completion nil)
+                 (org-depend--get-id-with-outline-path-completion
+                  org-depend-files)
                (org-depend--pomoi-to-id-check "from" from 'create)))
   (org-depend-update-db-from-files
    (org-depend--get-depend-files) org-depend-db)
