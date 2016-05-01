@@ -10,3 +10,4 @@
   Display the direct dependencies of the headline at point as an agenda view. With a prefix arg, also include all transitive dependencies. 
 - `org-depend-show-dependency-graph`
   Generate and display a dependency graph of the current file. This is done with graphviz.
+  ![alt text](dependency-graph.png "A graph showing the dependencies between Task 1,2,3,4.")
