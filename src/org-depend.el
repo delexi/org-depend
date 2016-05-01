@@ -33,6 +33,7 @@
 (require 'dash-functional)
 (require 'org)
 (require 'org-id)
+(require 's)
 
 (defconst org-depend-property "DEPEND")
 (defconst org-depend-symbol (intern (concat ":" org-depend-property)))
