@@ -338,7 +338,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
 
 (org-depend-ignore-body
  (setq org-depend-files
-       (cons `(,(concat (file-name-directory (buffer-file-name)) "test.org") :maxlevel . 4)
+       (cons `((,(concat (file-name-directory (buffer-file-name)) "../test.org")) :maxlevel . 4)
              org-depend-files))
  )
 
