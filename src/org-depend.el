@@ -264,7 +264,9 @@ then removes itself from `org-depend--oneshot-hook-variable'"
                 (org-depend-db-get-transitive id-or-pom org-depend-db)
               (org-depend-db-get id-or-pom org-depend-db)))
            (org-agenda-overriding-header
-            (format "Dependencies of: `%s'"
+            (format (if transitive
+                        "Direct and transitive dependencies of: `%s'"
+                      "Direct dependencies of: `%s'")
                     (plist-get (cadr (org-element-at-point)) :title)))
            (org-agenda-cmp-user-defined #'org-depend-sorting-strategy)
            (org-agenda-sorting-strategy '(user-defined-down))
