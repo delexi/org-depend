@@ -1,19 +1,103 @@
-* Task 1
+* TODO Task 1
 :PROPERTIES:
 :ID:       55b95977-5e5b-4457-bb76-533499bc34e7
 :DEPEND:   4d9c0cb1-fb10-4e28-a15b-63ae03169b39
 :END:
-* Task 2
+* TODO Task 2
 :PROPERTIES:
 :ID:       249d04f4-7352-488c-bf05-1b00578c414a
 :DEPEND:   4d9c0cb1-fb10-4e28-a15b-63ae03169b39
 :END:
-* Task 3
+* TODO Task 3
 :PROPERTIES:
 :ID:       1833d6fc-46bf-4827-93a8-3f8c22310053
 :DEPEND:   249d04f4-7352-488c-bf05-1b00578c414a
 :END:
-* Task 4
+* TODO Takk 4                                                  :capture_task:
 :PROPERTIES:
 :ID:       4d9c0cb1-fb10-4e28-a15b-63ae03169b39
+:DEPEND:   1d7f0ba3-2ebb-424f-8c4a-3478423f15ac fd961dd2-8ec6-4b25-a8cd-85db03ad917d
 :END:
+** NEXT test11
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 16:04]
+:ID:       1d7f0ba3-2ebb-424f-8c4a-3478423f15ac
+:END:
+** NEXT test10
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 16:03]
+:ID:       eaf211c4-097c-40e3-9309-847bc3d385e7
+:END:
+** NEXT test9
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 16:00]
+:ID:       65100e7e-7eed-4a6a-9b05-e4bf4f39d0cb
+:END:
+** NEXT test8
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 15:55]
+:ID:       37282911-ee19-409f-967a-c1162f05fbef
+:END:
+** NEXT test12
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 15:51]
+:ID:       bcd7c380-9768-4d45-aa73-3e1b88436acc
+:END:
+** NEXT test7
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 15:39]
+:ID:       fd961dd2-8ec6-4b25-a8cd-85db03ad917d
+:DEPEND:   37282911-ee19-409f-967a-c1162f05fbef
+:END:
+** NEXT test6
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 11:11]
+:ID:       f4a9a066-9bef-482f-9f18-d1e922644a72
+:END:
+** NEXT test5
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 11:08]
+:ID:       991200ce-e8f9-4e72-b9e9-b52b7c2ab4e9
+:END:
+** NEXT test4
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 11:07]
+:ID:       aa179281-e45b-4b44-9411-3a935f994d6d
+:END:
+** NEXT test3
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 11:04]
+:ID:       dc8dcf8a-23be-4e5f-9deb-3dc6e87b8b66
+:END:
+** NEXT test2
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 10:54]
+:ID:       8c50ad0d-5675-4952-ab51-f31fc90386f6
+:END:
+
+** NEXT test1 
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 10:47]
+:ID:       b68d5eba-6f63-4d63-b8ac-5f03a162786d
+:END:
+** NEXT test0
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 10:44]
+:ID:       3cc93577-475a-4818-b474-9450adbdc337
+:END:
+** NEXT test13
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 10:43]
+:ID:       9ef2af99-307e-4fda-8ce2-4dfe001eefbc
+:END:
+** NEXT bla14
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 10:40]
+:ID:       b8be31c7-2eab-4709-ac9f-ea4c024a32e6
+:END:
+** NEXT test15
+:PROPERTIES:
+:CREATED: [2016-04-30 Sat 10:39]
+:ID:       17b1bb1b-bebd-4f40-9cca-aa7a34a4e9d7
+:END:
+
