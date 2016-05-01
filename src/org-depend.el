@@ -1,3 +1,29 @@
+;;; org-depend.el --- Express dependencies between arbitrary headlines.
+
+;; Copyright (C) 2016 Alexander Baier
+
+;; Author: Alexander Baier <alexander.baier@mailbox.org>
+;; Homepage: http://example.com/foo
+
+;; Version: 0.0.1
+
+;; This file is not part of GNU Emacs.
+
+;; This file is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Code:
+
 ;; -*- lexical-binding: t -*-
 
 (require 'cl-lib)
@@ -56,7 +82,7 @@
   (assert (stringp dep-id))
   (assert (integer-or-marker-p dep-id))
   (assert (bufferp buffer))
-  (let* ((pos (if (markerp pom) (marker-position pom)) pom)
+  (let* ((pos (if (markerp pom) (marker-position pom) pom))
          (buf (if (markerp pom) (marker-buffer pom) buffer)))
     (with-current-buffer buf
       (org-element-at-point)
@@ -299,3 +325,6 @@ then removes itself from `org-depend--oneshot-hook-variable'"
        (cons `(,(concat (file-name-directory (buffer-file-name)) "test.org") :maxlevel . 4)
              org-depend-files))
  )
+
+(provide 'org-depend.el)
+;;; org-depend.el ends here
