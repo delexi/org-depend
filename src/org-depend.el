@@ -329,5 +329,5 @@ then removes itself from `org-depend--oneshot-hook-variable'"
              org-depend-files))
  )
 
-(provide 'org-depend.el)
+(provide 'org-depend)
 ;;; org-depend.el ends here
