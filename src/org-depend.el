@@ -22,6 +22,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+
 ;;; Code:
 
 ;; -*- lexical-binding: t -*-
@@ -38,7 +40,7 @@
 (defun org-depend--db-init ()
   (cons (make-hash-table :test 'equal) (make-hash-table :test 'equal)))
 
-(defvar org-depend-db (org-depend-db-init))
+(defvar org-depend-db (org-depend--db-init))
 
 (defvar org-depend-files org-refile-targets
   "Files scanned for dependant headlines in the format of `org-refile-targets'.")
@@ -60,8 +62,8 @@
     org-depend-files)))
 
 (defun org-depend--get-dependencies (pom &optional buffer)
-  (assert (integer-or-marker-p pom))
-  (assert (bufferp buffer))
+  (cl-assert (integer-or-marker-p pom))
+  (cl-assert (bufferp buffer))
   (let* ((pos (if (markerp pom) (marker-position pom) pom))
          (buf (if (markerp pom) (marker-buffer pom) buffer)))
     (with-current-buffer buf
@@ -69,9 +71,9 @@
       (org-entry-get-multivalued-property pos org-depend-property))))
 
 (defun org-depend--add-dependency (dep-id pom &optional buffer)
-  (assert (stringp dep-id))
-  (assert (integer-or-marker-p pom))
-  (unless (markerp pom) (assert (bufferp buffer)))
+  (cl-assert (stringp dep-id))
+  (cl-assert (integer-or-marker-p pom))
+  (unless (markerp pom) (cl-assert (bufferp buffer)))
   (let* ((pos (if (markerp pom) (marker-position pom) pom))
          (buf (if (markerp pom) (marker-buffer pom) buffer)))
     (with-current-buffer buf
@@ -79,9 +81,9 @@
       (org-entry-add-to-multivalued-property pos org-depend-property dep-id))))
 
 (defun org-depend--remove-dependency (dep-id pom &optional buffer)
-  (assert (stringp dep-id))
-  (assert (integer-or-marker-p dep-id))
-  (assert (bufferp buffer))
+  (cl-assert (stringp dep-id))
+  (cl-assert (integer-or-marker-p dep-id))
+  (unless (markerp pom) (cl-assert (bufferp buffer)))
   (let* ((pos (if (markerp pom) (marker-position pom) pom))
          (buf (if (markerp pom) (marker-buffer pom) buffer)))
     (with-current-buffer buf
@@ -163,14 +165,14 @@ If necessary, the ID is created."
                (and id
                     (org-depend--get-dependencies (point) (current-buffer)))))
          (when dependencies
-           (org-depend-db-put id dependencies db)
-           (org-depend-put-update-time (current-time) file db))))
+           (org-depend--db-put id dependencies db)
+           (org-depend--put-update-time (current-time) file db))))
      t 'file))
   db)
 
 (defun org-depend-update-db-from-files (files db &optional force)
   (-map (lambda (file)
-          (let ((last-update-time (or (org-depend-get-update-time file db)
+          (let ((last-update-time (or (org-depend--get-update-time file db)
                                       0))
                 (mod-time (nth 5 (file-attributes file))))
             (when (or force
@@ -199,7 +201,7 @@ If necessary, the ID is created."
   "Runs all functions in `org-depend--capture-oneshot-functions' and
 then removes itself from `org-depend--oneshot-hook-variable'"
   (-map #'funcall org-depend--capture-oneshot-functions)
-  (setq org-depend--capture-oneshot-hooks nil)
+  (setq org-depend--capture-oneshot-functions nil)
   (remove-hook org-depend--oneshot-hook-variable #'org-depend--capture-hook-function))
 
 (defun org-depend--capture-add-oneshot-hook (&rest fns)
@@ -284,23 +286,24 @@ then removes itself from `org-depend--oneshot-hook-variable'"
 
 (defun org-depend-add-dependency (&optional from to)
   (interactive "P")
-  (setq to (if (interactive-p)
-               (org-depend-get-id-with-outline-path-completion nil)
+  (setq to (if (called-interactively-p 'any)
+               (org-depend--get-id-with-outline-path-completion nil)
              (org-depend--pomoi-to-id-check "to" to 'create)))
   (setq from (if (eq from '(4))
-                 (org-depend-get-id-with-outline-path-completion nil)
+                 (org-depend--get-id-with-outline-path-completion nil)
                (org-depend--pomoi-to-id-check "from" from 'create)))
   (org-depend-update-db-from-files
    (org-depend--get-depend-files) org-depend-db)
   (org-depend--add-dependency to (org-id-find from 'as-marker)))
 
+(declare-function image-transform-fit-to-height 'image-mode)
+(declare-function image-transform-fit-to-width 'image-mode)
 (defun org-depend-show-dependency-graph (&optional buffer)
   (interactive "bBuffer: ")
   (org-depend-update-db-from-files (org-depend--get-depend-files) org-depend-db)
-  (unless buffer (setq buffer (current-buffer)))
-  (let* ((ids (with-current-buffer buffer
+  (let* ((ids (with-current-buffer (or buffer (current-buffer))
                 (org-map-entries (lambda () (org-entry-get (point) "ID")))))
-         (db (org-depend-update-from-file buffer org-depend-db))
+         (db (org-depend-update-db (buffer-file-name) org-depend-db))
          (graph (org-depend-graphs ids db))
          (dot (org-depend-graph-to-dot graph))
          (dot-file (with-temp-buffer
