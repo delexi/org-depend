@@ -271,7 +271,8 @@ then removes itself from `org-depend--oneshot-hook-variable'"
            (org-agenda-skip-function
             (lambda () (if (member (org-id-get (point)) dependencies)
                            nil
-                         (outline-next-heading)))))
+                         ;; return (point-max), when at eob
+                         (or (outline-next-heading) (point-max))))))
       (org-tags-view nil "{.*}"))))
 
 ;;;###autoload
