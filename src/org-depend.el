@@ -51,15 +51,17 @@
 (defun org-depend--put-update-time (time file db) (puthash file time (cdr db)))
 
 (defun org-depend--get-depend-files ()
-  (-flatten
-   (-map
-    (-lambda ((fn-or-list . _))
-      (cond
-       ((listp fn-or-list) fn-or-list)
-       ((functionp fn-or-list) (let ((file (funcall fn-or-list)))
-                                 (if (listp file) file (list file))))
-       (t (error "Car of each cons in `org-depend-files' must be a function or a list"))))
-    org-depend-files)))
+  (or
+   (-flatten
+    (-map
+     (-lambda ((fn-or-list . _))
+       (cond
+        ((listp fn-or-list) fn-or-list)
+        ((functionp fn-or-list) (let ((file (funcall fn-or-list)))
+                                  (if (listp file) file (list file))))
+        (t (error "Car of each cons in `org-depend-files' must be a function or a list"))))
+     org-depend-files))
+   (list (buffer-file-name))))
 
 (defun org-depend--get-dependencies (pom &optional buffer)
   (cl-assert (integer-or-marker-p pom))
