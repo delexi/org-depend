@@ -39,15 +39,48 @@
 (defconst org-depend-symbol (intern (concat ":" org-depend-property)))
 
 (defun org-depend--db-init ()
-  (cons (make-hash-table :test 'equal) (make-hash-table :test 'equal)))
+  (cons (cons (make-hash-table :test 'equal)
+              (make-hash-table :test 'equal))
+        (make-hash-table :test 'equal)))
 
-(defvar org-depend-db (org-depend--db-init))
+(defvar org-depend-db (org-depend--db-init)
+  "The database storing the dependency and scanning information.
+
+This is a cons cell of the following form:
+
+  \(DEPS . SCANS)
+
+DEPS is a hash-table whose keys are ids and whose values are cons
+cells of the following form:
+
+  \(DEPENDENCIES . DEPENDERS)
+
+DEPENDENCIES is the list of ids which the key depends on.
+DEPENDERS is the list of ids that depend on the key.
+
+SCANS is another hash-table whose keys are filenames and whose
+values are the timestamps denoting when those filenames where
+last scanned for dependency information.")
 
 (defvar org-depend-files org-refile-targets
   "Files scanned for dependant headlines in the format of `org-refile-targets'.")
 
 ;;; inner helper functions
-(defun org-depend--db-put (id deps db) (puthash id deps (car db)))
+(defun org-depend--db-put (id deps db)
+  (let* ((dependencies-db (caar db))
+         (dependers-db (cdar db)))
+    ;; Do just a put, as these are all the dependencies we are gonna get. Each
+    ;; headline stores all its dependencies, so we know, there won't be further
+    ;; dependencies.
+    (puthash id deps dependencies-db)
+    ;; For the dependers we have to add to potentially already existing
+    ;; dependers, as this info is only implicit in the org files.
+    (mapc
+     (lambda (dep)
+       (let ((dependers (gethash dep dependers-db)))
+         (puthash dep (cons id dependers) dependers-db)))
+     deps)))
+
 (defun org-depend--get-update-time (file db) (gethash file (cdr db)))
 (defun org-depend--put-update-time (time file db) (puthash file time (cdr db)))
 
@@ -125,7 +158,7 @@ If necessary, the ID is created."
   (let ((res (funcall f h)))
     (if res
         res
-      (-when-let (dependencies (org-depend-db-get h db))
+      (-when-let (dependencies (org-depend-get-dependencies h db))
         (-some (lambda (h) (org-depend-find f h db)) dependencies)))))
 
 (defun org-depend-compare (id1 id2 db)
@@ -136,15 +169,28 @@ If necessary, the ID is created."
      (h1>h2 'smaller)
      (h1<h2 'greater))))
 
-(defun org-depend-db-get (id db)
-  (gethash id (car db)))
+(defun org-depend--get (key table &optional transitive)
+  "Retrieve all children of KEY from TABLE.
 
-(defun org-depend-db-get-transitive (id db)
-  (-when-let (dependencies (org-depend-db-get id db))
-    (append dependencies
-            (-flatten
-             (-map (-rpartial #'org-depend-db-get-transitive db)
-                   dependencies)))))
+TABLE is a hash-table where each key is mapped to a list of
+values.
+
+If TRANSITIVE is non-nil, this function gets the values of KEY
+and then looks up all values those values map to and so on. The
+combined list of all of these values is returned."
+  (-when-let (values (gethash key table))
+    (if transitive
+        (append values
+                (-flatten
+                 (-map (-rpartial #'org-depend--get table)
+                       values)))
+      values)))
+
+(defun org-depend-get-dependencies (id db &optional transitive)
+  (org-depend--get id (caar db) transitive))
+
+(defun org-depend-get-dependers (id db &optional transitive)
+  (org-depend--get id (cadr db) transitive))
 
 (defun org-depend-sorting-strategy (a b)
   (let* ((ma (or (get-text-property 0 'org-marker a)
@@ -220,7 +266,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
    graphs))
 
 (defun org-depend-graph (id db)
-  (-if-let (deps (org-depend-db-get id db))
+  (-if-let (deps (org-depend-get-dependencies id db))
       (let ((edges (-map (-partial #'cons id) deps))
             (results (org-depend--merge-graphs
                       (-map (-rpartial #'org-depend-graph db) deps))))
@@ -260,10 +306,8 @@ then removes itself from `org-depend--oneshot-hook-variable'"
   (org-depend-update-db-from-files (org-depend--get-depend-files) org-depend-db)
   (with-current-buffer (find-file-noselect (car (org-id-find id-or-pom)))
     (goto-char (cdr (org-id-find id-or-pom)))
-    (let* ((dependencies
-            (if transitive
-                (org-depend-db-get-transitive id-or-pom org-depend-db)
-              (org-depend-db-get id-or-pom org-depend-db)))
+    (let* ((dependencies (org-depend-get-dependencies
+                          id-or-pom org-depend-db transitive))
            (org-agenda-overriding-header
             (format (if transitive
                         "Direct and transitive dependencies of: `%s'"
