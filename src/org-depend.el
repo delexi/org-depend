@@ -292,7 +292,7 @@ then removes itself from `org-depend--oneshot-hook-variable'"
                           edges)))
     (s-join "\n"
             (append '("digraph org_dependencies {")
-                    '("  size=\"8,8!\";")
+                    '("  size=\"4,4!\";")
                     (-map (-partial #'s-prepend "  ") edges-dot)
                     '("}")))))
 
