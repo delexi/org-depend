@@ -1,7 +1,7 @@
 (source gnu)
 (source melpa)
 
-(package-file "src/org-depend.el")
+(package-file "src/org-dpnds.el")
 
 (files "src/*")
 
